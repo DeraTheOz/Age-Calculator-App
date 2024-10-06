@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="./assets/images/favicon-32x32.png"
+		/>
+		<link
+			rel="stylesheet"
+			href="css/style.css"
+			type="text/css"
+			media="all"
+		/>
+
+		<script defer src="script.js"></script>
+
+		<title>Age calculator app</title>
+	</head>
+	<body>
+		<section class="container">
+			<form class="form">
+				<div class="form__group">
+					<div>
+						<label for="day" class="label__day">Day</label>
+						<input
+							class="form__input"
+							type="text"
+							name="day"
+							id="day"
+							maxlength="2"
+							placeholder="DD"
+						/>
+						<p class="day-error"></p>
+					</div>
+
+					<div>
+						<label for="month" class="label__month">Month</label>
+						<input
+							class="form__input"
+							type="tex"
+							name="month"
+							id="month"
+							maxlength="2"
+							placeholder="MM"
+						/>
+						<p class="month-error"></p>
+					</div>
+
+					<div>
+						<label for="year" class="label__year">Year</label>
+						<input
+							class="form__input"
+							type="text"
+							name="year"
+							id="year"
+							maxlength="4"
+							placeholder="YYYY"
+						/>
+						<p class="year-error"></p>
+					</div>
+				</div>
+
+				<div class="line">
+					<span></span>
+					<button class="btn">
+						<svg class="btn__icon">
+							<use
+								xlink:href="assets/images/icon-arrow.svg#star"
+							></use>
+						</svg>
+					</button>
+				</div>
+			</form>
+
+			<div class="results">
+				<p><span class="year-display">--</span> years</p>
+				<p><span class="month-display">--</span> months</p>
+				<p><span class="day-display">--</span> days</p>
+			</div>
+		</section>
+	</body>
+</html>
