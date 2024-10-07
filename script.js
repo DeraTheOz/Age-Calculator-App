@@ -20,6 +20,8 @@ const dayDisplay = document.querySelector('.day-display');
 const monthDisplay = document.querySelector('.month-display');
 const yearDisplay = document.querySelector('.year-display');
 
+const toast = document.querySelector('.hidden');
+
 // Regex
 const checkNonDigits = /\D/;
 
@@ -181,12 +183,7 @@ const validateYearInput = function () {
 };
 
 //////////////////////////////////////////////
-//////////////////////////////////////////////
 const validateDates = function (date, month, year) {
-	let currentDate = new Date();
-	let currentMonth = currentDate.getMonth();
-	let monthsPassed = currentMonth - month;
-
 	// Check if the day exceeds number of Days in the selected month
 	const daysInMonth = getDaysInMonth(month, year);
 
@@ -198,9 +195,7 @@ const validateDates = function (date, month, year) {
 
 	// Check if birthDate is 29th February in a leap year
 	if (isLeapYear(year) && parseInt(date) === 29 && month === 1) {
-		monthsPassed--;
 		clearError(labelDay, dayInput);
-		updateMonthDisplay(monthsPassed);
 		return true;
 	}
 
@@ -214,48 +209,82 @@ const validateDates = function (date, month, year) {
 	// Check if birthDate is 28th February in a leap Year
 	if (isLeapYear(year) && parseInt(date) === 28 && month === 1) {
 		clearError(labelDay, dayInput);
-		updateMonthDisplay(monthsPassed);
 		return true;
 	}
 
 	// For all other valid dates
 	clearError(labelDay, dayInput);
-	updateMonthDisplay(monthsPassed);
-
 	return true;
 };
 
 //////////////////////////////////////////////
-//////////////////////////////////////////////
-const calcAge = function () {
-	const birthDate = dayInput.value.trim();
-	const birthMonth = monthInput.value.trim() - 1;
-	const birthYear = yearInput.value.trim();
+const dateDifference = function (startDate, endDate) {
+	let years = endDate.getFullYear() - startDate.getFullYear();
+	let months = endDate.getMonth() - startDate.getMonth();
+	let days = endDate.getDate() - startDate.getDate();
 
-	const isDateValid = validateDates(birthDate, birthMonth, birthYear);
+	// Check if day of the month in endDate is earlier than startDate
+	if (days < 0) {
+		months--;
+		days += new Date(
+			endDate.getFullYear(),
+			endDate.getMonth(),
+			0
+		).getDate();
+	}
 
-	// Gaurd clause
-	if (!isDateValid) return;
+	// Check if month in endDate is earlier than startDate
+	if (months < 0) {
+		years--;
+		months += 12;
+	}
 
-	// Calculate the number of days that has passed from the inputed birthDate to the current day of the month in the current year
-	const currentYear = new Date().getFullYear();
-	const currentDate = new Date().getTime();
-	const specifiedMonth = new Date(
-		currentYear,
-		birthMonth,
-		birthDate
-	).getTime();
-	const timeDiff = currentDate - specifiedMonth;
-
-	let daysPassed = Math.floor(timeDiff / 86400000);
-
-	let currentAge = currentYear - birthYear;
-
-	yearDisplay.textContent = `${currentAge}`;
-	dayDisplay.textContent = `${daysPassed < 0 ? '0' : daysPassed}`;
+	return { years, months, days };
 };
 
-////////////////////////////////////////////////
+//////////////////////////////////////////////
+const calcAge = function () {
+	const birthDate = parseInt(dayInput.value.trim());
+	const birthMonth = parseInt(monthInput.value.trim()) - 1;
+	const birthYear = parseInt(yearInput.value.trim());
+
+	// Current date
+	const today = new Date();
+	let currentYear = today.getFullYear();
+	let currentMonth = today.getMonth();
+	let currentDate = today.getDate();
+
+	// Check if the birth date is in the future
+	if (
+		birthYear > currentYear ||
+		(birthYear === currentYear && birthMonth > currentMonth) ||
+		(birthYear === currentYear &&
+			birthMonth === currentMonth &&
+			birthDate > currentDate)
+	) {
+		clearDateResults();
+		toast.classList.add('active');
+		return;
+	} else toast.classList.remove('active');
+
+	// Validate input dates
+	const isDateValid = validateDates(birthDate, birthMonth, birthYear);
+
+	// Gaurd clause for input dates
+	if (!isDateValid) return;
+
+	// Get years, months and days difference using the dateDifference function
+	const ageDifference = dateDifference(
+		new Date(birthYear, birthMonth, birthDate),
+		today
+	);
+
+	// Update display with calculated results
+	yearDisplay.textContent = `${ageDifference.years}`;
+	updateMonthDisplay(ageDifference.months);
+	dayDisplay.textContent = `${ageDifference.days}`;
+};
+
 ////////////////////////////////////////////////
 // Event Listeners
 dayInput.addEventListener('input', validateDayInput);
