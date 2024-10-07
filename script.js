@@ -94,11 +94,6 @@ const validateDayInput = function () {
 		return false;
 	}
 
-	if (day.length < 2) {
-		showError(labelDay, dayInput, 'At least two digits');
-		return false;
-	}
-
 	if (day <= 0) {
 		showError(labelDay, dayInput, 'Must be a valid day');
 		return false;
@@ -119,11 +114,6 @@ const validateMonthInput = function () {
 
 	if (checkNonDigits.test(month)) {
 		showError(labelMonth, monthInput, 'Numbers only');
-		return false;
-	}
-
-	if (month.length < 2) {
-		showError(labelMonth, monthInput, 'At least two digits');
 		return false;
 	}
 
